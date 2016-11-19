@@ -144,7 +144,9 @@ columnRelation = relation' $ do
   typ       <- query  pgType
 
   wheres $ att ! Attr.atttypid'    .=. typ ! Type.oid'
-  wheres $ typ ! Type.typtype'     .=. value 'b'  -- 'b': base type only
+  wheres $ typ ! Type.typtype'     `in'` values [ 'b'    -- 'b': base type
+                                                , 'e'    -- 'e': enum type
+                                                ]
 
   wheres $ typ ! Type.typcategory' `in'` values [ 'B' -- Boolean types
                                                 , 'D' -- Date/time types
@@ -152,6 +154,8 @@ columnRelation = relation' $ do
                                                 , 'N' -- Numeric types
                                                 , 'S' -- String types
                                                 , 'T' -- typespan types
+                                                , 'U' -- user-defined types
+                                                , 'E' -- enums
                                                 ]
 
   asc $ att ! Attr.attnum'
